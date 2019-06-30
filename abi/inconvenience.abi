@@ -545,6 +545,20 @@
 		"constant": false,
 		"inputs": [
 			{
+				"name": "_users",
+				"type": "address[]"
+			}
+		],
+		"name": "signUpUserAdmin",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
 				"name": "_newOwner",
 				"type": "address"
 			}

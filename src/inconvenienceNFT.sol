@@ -60,7 +60,7 @@ contract Ownable {
 
     constructor() public {
         owner = msg.sender;
-        marketAddress = 0x2975B5408766D40E715f223136Fa698a7378b0B8;
+        marketAddress = 0xfaf7a43513b97cc2bc43268d2181528a8b322995;
     }
 
     modifier onlyOwner() { require(msg.sender == owner); _; }
@@ -452,7 +452,6 @@ interface IERC20 {
     function totalSupply() external view returns (uint256);
     function balanceOf(address who) external view returns (uint256);
     function allowance(address owner, address spender) external view returns (uint256);
-    function decimals() external view returns (uint256);
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
@@ -484,14 +483,15 @@ contract InconvenienceNFT is ERC721Full {
 
     constructor (string memory _name, string memory _symbol) public
     ERC721Full(_name, _symbol) {
-        SIT_ADDRESS  = IERC20(0xc67357053ba575136fc110be2e8fdbd482601b1e);
-        SIT_DECIMALS = SIT_ADDRESS.decimals();
+        SIT_ADDRESS  = IERC20(0x5288f80F4145035866aC4cB45a4D8DEa889ec827);
+        SIT_DECIMALS = 18;
 
-        LvUpCost.push(1 * 10**uint(SIT_DECIMALS));
-        LvUpCost.push(100 * 10**uint(SIT_DECIMALS));
-        LvUpCost.push(300 * 10**uint(SIT_DECIMALS));
-        LvUpCost.push(500 * 10**uint(SIT_DECIMALS));
-        LvUpCost.push(1000 * 10**uint(SIT_DECIMALS));
+        for(uint256 ui = 0; ui < 20; ui++) {
+            if(ui != 0)
+                LvUpCost.push((50 * ui) * 10**uint(SIT_DECIMALS));
+            else
+                LvUpCost.push(1 * 10**uint(SIT_DECIMALS));
+        }
 
         nickNameCost = 100 * 10**uint(SIT_DECIMALS);
     }
@@ -541,6 +541,51 @@ contract InconvenienceNFT is ERC721Full {
         
         tokenDataList[senderTokenID].nickName = _nickName;
         tokenDataList[senderTokenID].nickNameTicket = false;
+    }
+    
+    function setUserData(address[] _user, uint256[] _level, bytes32[] _nickName) external onlyOwner {
+        require(_user.length == _level.length);
+        require(_user.length == _nickName.length);
+        
+        uint256 ui;
+        uint256 tokenId;
+        
+         // mint NFT
+        for(ui = 0; ui < _user.length; ui++) {
+            
+            tokenId = totalSupply();
+            
+            _mint(_user[ui], tokenId);
+            
+            TokenData memory newTokenData = TokenData({
+                level : _level[ui],
+                nickName : bytes32ToString(_nickName[ui]),
+                nickNameTicket : false
+            });
+            
+            tokenDataList[tokenId] = newTokenData;
+            emit TokenMint(msg.sender, tokenDataList[tokenId].level, tokenDataList[tokenId].nickName);
+        }
+    }
+    
+      function bytes32ToString(bytes32 x) private pure returns (string) {
+        bytes memory bytesString = new bytes(32);
+        uint charCount = 0;
+        
+        for (uint j = 0; j < 32; j++) {
+            byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
+            if (char != 0) {
+                bytesString[charCount] = char;
+                charCount++;
+            }
+        }
+        
+        bytes memory bytesStringTrimmed = new bytes(charCount);
+        
+        for (j = 0; j < charCount; j++) {
+            bytesStringTrimmed[j] = bytesString[j];
+        }
+        return string(bytesStringTrimmed);
     }
 
     function changeTokenAddress(IERC20 _tokenCA) external onlyOwner {
@@ -593,5 +638,13 @@ contract InconvenienceNFT is ERC721Full {
     function getUserLVUpCost(address _user) external view returns (uint256) { 
         uint256 senderTokenID = tokenOfOwnerByIndex(_user, 0);
         return  LvUpCost[tokenDataList[senderTokenID].level];
+    }
+    
+    function getLevelCost(uint _level) external view returns (uint256) {
+        return LvUpCost[_level];
+    }
+    
+    function getMaxLevel() external view returns (uint256) {
+        return LvUpCost.length;
     }
 }

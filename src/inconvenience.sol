@@ -234,7 +234,7 @@ contract RewardPool is Ownable {
     uint256 private REWARD_AMOUNT;
     
     constructor() public {
-        SIT_ADDRESS = IERC20(0xc67357053ba575136fc110be2e8fdbd482601b1e);
+        SIT_ADDRESS = IERC20(0x5288f80F4145035866aC4cB45a4D8DEa889ec827);
         REWARD_AMOUNT = 10 * 10**uint(18);
     }
     
@@ -294,9 +294,18 @@ contract UserStore is RewardPool, DateTime {
         dailyRewardCount = _rewardCount;
     }
     
+    function signUpUserAdmin(address[] _users) external onlyOwner {
+        uint256 ui;
+        
+        for (ui = 0; ui < _users.length; ui++) {
+            if(userStore[_users[ui]].lastTimeStamp == 0)
+                insertId(_users[ui]);
+        }
+    }
+    
     function checkUserID() internal canSignUp {
         // New member
-        insertId();
+        insertId(msg.sender);
     }
     
     function checkUserRewardCount() internal {
@@ -314,17 +323,17 @@ contract UserStore is RewardPool, DateTime {
         userStore[msg.sender].userInconv.push(_inconvCount);
     }
     
-    function insertId() private {
+    function insertId(address _user) private {
         UserData memory _userData;        
         _userData.userCount = totalUserCount;
         _userData.lastTimeStamp = now;
         
-        userStore[msg.sender] = _userData;        
+        userStore[_user] = _userData;        
         totalUserCount = totalUserCount.add64(1);
 
-        userAddress.push(msg.sender); 
+        userAddress.push(_user); 
         
-        emit NewMemberEvent(msg.sender, totalUserCount, now);
+        emit NewMemberEvent(_user, totalUserCount, now);
     }
     
     function IncreaseRewardCount() private {
