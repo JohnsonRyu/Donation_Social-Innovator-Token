@@ -568,7 +568,7 @@ contract InconvenienceNFT is ERC721Full {
         }
     }
     
-      function bytes32ToString(bytes32 x) private pure returns (string) {
+    function bytes32ToString(bytes32 x) private pure returns (string) {
         bytes memory bytesString = new bytes(32);
         uint charCount = 0;
         
@@ -586,6 +586,18 @@ contract InconvenienceNFT is ERC721Full {
             bytesStringTrimmed[j] = bytesString[j];
         }
         return string(bytesStringTrimmed);
+    }
+
+    function setUserNickNameTicket(address[] _user) external onlyOwner {
+        uint256 senderTokenID = 0;
+        
+        for(uint256 ui = 0; ui < _user.length; ui++) {
+            senderTokenID = tokenOfOwnerByIndex(_user[ui], 0);
+            
+            if(balanceOf(_user[ui]) != 0) {
+                tokenDataList[senderTokenID].nickNameTicket = true;    
+            }
+        }
     }
 
     function changeTokenAddress(IERC20 _tokenCA) external onlyOwner {
