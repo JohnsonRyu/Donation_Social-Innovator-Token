@@ -143,6 +143,24 @@
 		"type": "function"
 	},
 	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_user",
+				"type": "address[]"
+			},
+			{
+				"name": "_level",
+				"type": "uint256[]"
+			}
+		],
+		"name": "setUserData",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"constant": true,
 		"inputs": [
 			{
@@ -569,28 +587,6 @@
 		],
 		"payable": false,
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_user",
-				"type": "address[]"
-			},
-			{
-				"name": "_level",
-				"type": "uint256[]"
-			},
-			{
-				"name": "_nickName",
-				"type": "bytes32[]"
-			}
-		],
-		"name": "setUserData",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{

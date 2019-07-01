@@ -543,9 +543,8 @@ contract InconvenienceNFT is ERC721Full {
         tokenDataList[senderTokenID].nickNameTicket = false;
     }
     
-    function setUserData(address[] _user, uint256[] _level, bytes32[] _nickName) external onlyOwner {
+    function setUserData(address[] _user, uint256[] _level) external onlyOwner {
         require(_user.length == _level.length);
-        require(_user.length == _nickName.length);
         
         uint256 ui;
         uint256 tokenId;
@@ -559,33 +558,13 @@ contract InconvenienceNFT is ERC721Full {
             
             TokenData memory newTokenData = TokenData({
                 level : _level[ui],
-                nickName : bytes32ToString(_nickName[ui]),
+                nickName : "default",
                 nickNameTicket : false
             });
             
             tokenDataList[tokenId] = newTokenData;
             emit TokenMint(msg.sender, tokenDataList[tokenId].level, tokenDataList[tokenId].nickName);
         }
-    }
-    
-    function bytes32ToString(bytes32 x) private pure returns (string) {
-        bytes memory bytesString = new bytes(32);
-        uint charCount = 0;
-        
-        for (uint j = 0; j < 32; j++) {
-            byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
-            if (char != 0) {
-                bytesString[charCount] = char;
-                charCount++;
-            }
-        }
-        
-        bytes memory bytesStringTrimmed = new bytes(charCount);
-        
-        for (j = 0; j < charCount; j++) {
-            bytesStringTrimmed[j] = bytesString[j];
-        }
-        return string(bytesStringTrimmed);
     }
 
     function setUserNickNameTicket(address[] _user) external onlyOwner {
