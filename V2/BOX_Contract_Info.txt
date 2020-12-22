@@ -1,0 +1,5 @@
+#  배포시 사용한 툴
+- KlaytnIDE
+
+# 솔리디티 컴파일러 버전
+- pragma solidity ^0.4.24;
