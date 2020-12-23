@@ -3,3 +3,6 @@
 
 # 솔리디티 컴파일러 버전
 - pragma solidity ^0.4.24;
+
+# BOX Contract Address
+- 0x656f86dd0f3bc25af2d15855f2a2f142f9eaed87
